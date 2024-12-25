@@ -10,7 +10,7 @@ Install-Module -Name pwshuploadindicatorsapi
 
 ## Usage
 
-Assumes you have created an application registration in Entra ID and have the necessary permissions to interact with the API, which is the **[`Microsoft Sentinel Contibutor`]**(https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/security#microsoft-sentinel-contributor) role on the relevant workspace.
+Assumes you have created an application registration in Entra ID and have the necessary permissions to interact with the API, which is the [`Microsoft Sentinel Contibutor`](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/security#microsoft-sentinel-contributor) role on the relevant workspace.
 
 ### Setting the variables
 
@@ -48,7 +48,7 @@ Push-IndicatorsToSentinel -WorkspaceId $workspaceId -Indicators $indicators -Tok
 
 ### Connect-UploadIndicatorsAPI
 
-This function is used to connect to the Upload Indicators API. The application registration referenced by the client id and client secret must have the appropriate permissions to interact with the API, which is the **[`Microsoft Sentinel Contibutor`]**(https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/security#microsoft-sentinel-contributor) role on the relevant workspace.
+This function is used to connect to the Upload Indicators API. The application registration referenced by the client id and client secret must have the appropriate permissions to interact with the API, which is the [`Microsoft Sentinel Contibutor`](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/security#microsoft-sentinel-contributor) role on the relevant workspace.
 
 It will output a `$token` object that can be used to authenticate with the API.
 
