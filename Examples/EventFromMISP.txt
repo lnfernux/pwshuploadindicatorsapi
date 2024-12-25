@@ -1,0 +1,23 @@
+id                  : 1
+org_id              : 1
+date                : 2015-09-01
+info                : The Spy Kittens Are Back: Rocket Kitten 2
+uuid                : 56ca35a0-0f20-4cca-8fc3-4cd69062e56a
+published           : True
+analysis            : 2
+attribute_count     : 15
+orgc_id             : 2
+timestamp           : 1466509603
+distribution        : 3
+sharing_group_id    : 0
+proposal_email_lock : False
+locked              : False
+threat_level_id     : 3
+publish_timestamp   : 1734946734
+sighting_timestamp  : 0
+disable_correlation : False
+extends_uuid        : 
+protected           : 
+Org                 : @{id=1; name=ORGNAME; uuid=987c32b5-be32-4ad8-9ccc-a1dee70fe473}
+Orgc                : @{id=2; name=CUDESO; uuid=56c42374-fdb8-4544-a218-41ffc0a8ab16}
+EventTag            : {@{id=1; event_id=1; tag_id=6; local=False; relationship_type=; Tag=}}

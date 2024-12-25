@@ -1,0 +1,39 @@
+id                  : 312411
+event_id            : 1774
+object_id           : 22841
+object_relation     : vulnerable-configuration
+category            : External analysis
+type                : cpe
+value1              : cpe:2.3:o:qualcomm:ssg2115p_firmware:-:*:*:*:*:*:*:*
+value2              : 
+to_ids              : False
+uuid                : ea15e98c-9eb6-481e-b81a-f0c14d6e868b
+timestamp           : 1734527889
+distribution        : 5
+sharing_group_id    : 0
+comment             : 
+deleted             : False
+disable_correlation : False
+first_seen          : 
+last_seen           : 
+value               : cpe:2.3:o:qualcomm:ssg2115p_firmware:-:*:*:*:*:*:*:*
+
+id                  : 312410
+event_id            : 1774
+object_id           : 22841
+object_relation     : vulnerable-configuration
+category            : External analysis
+type                : cpe
+value1              : cpe:2.3:o:qualcomm:srv1m_firmware:-:*:*:*:*:*:*:*
+value2              : 
+to_ids              : False
+uuid                : 685a22f6-b471-4ada-a084-deed28c1e4dc
+timestamp           : 1734527889
+distribution        : 5
+sharing_group_id    : 0
+comment             : 
+deleted             : False
+disable_correlation : False
+first_seen          : 
+last_seen           : 
+value               : cpe:2.3:o:qualcomm:srv1m_firmware:-:*:*:*:*:*:*:*
