@@ -27,7 +27,7 @@ $workspaceId = "yourworkspaceid"
 
 ### Pushing indicators to Microsoft Sentinel
 
-*Note*: This example assumes that you have already installed the **[`pwshmisp`]**(https://www.powershellgallery.com/packages/pwshmisp) module and have an event with attributes that you want to push to Microsoft Sentinel.
+*Note*: This example assumes that you have already installed the [`pwshmisp`](https://www.powershellgallery.com/packages/pwshmisp) module and have an event with attributes that you want to push to Microsoft Sentinel.
 
 ```powershell
 # First, get an event from MISP
