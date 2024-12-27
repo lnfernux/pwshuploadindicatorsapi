@@ -1,13 +1,5 @@
 
-# pwshuploadindicatorsapi 
-
-```
-░       ░░░  ░░░░  ░░░      ░░░  ░░░░  ░░  ░░░░  ░░        ░░░      ░░░       ░░░        ░
-▒  ▒▒▒▒  ▒▒  ▒  ▒  ▒▒  ▒▒▒▒▒▒▒▒  ▒▒▒▒  ▒▒  ▒▒▒▒  ▒▒▒▒▒  ▒▒▒▒▒  ▒▒▒▒  ▒▒  ▒▒▒▒  ▒▒▒▒▒  ▒▒▒▒
-▓       ▓▓▓        ▓▓▓      ▓▓▓        ▓▓  ▓▓▓▓  ▓▓▓▓▓  ▓▓▓▓▓  ▓▓▓▓  ▓▓       ▓▓▓▓▓▓  ▓▓▓▓
-█  ████████   ██   ████████  ██  ████  ██  ████  █████  █████        ██  ███████████  ████
-█  ████████  ████  ███      ███  ████  ███      ███        ██  ████  ██  ████████        █
-```                                                                                          
+# pwshuploadindicatorsapi                                                                                      
 
 This function is for interacting with the Upload Indicators API for Microsoft Sentinel. The idea is to make it easier to upload indicators using this API. 
 
