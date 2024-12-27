@@ -55,27 +55,116 @@ function ConvertTo-UploadIndicatorsAPIFormat {
         $DaysToExpireIPV4 = 180,
         $DaysToExpireIPV6 = 180,
         $DaysToExpireDomain = 180,
-        $DaysToExpireURL = 365
+        $DaysToExpireURL = 365,
+        $Confidence,
+        $SourceSystem = "pwshuploadindicatorsapi"
     )
     $indicators = @()
-
+    # Set labels from the event - labels should be a list of strings
+    $labels = @()
+    foreach($tag in $MISPEvent.EventTag) {
+        $labels += $tag.Tag.Name.TrimStart()
+    }
+    # Check event for confidence tag
+    foreach($tag in $labels) {
+        if($tag -eq 'misp:confidence-level="completely-confident"') {
+            $Confidence = 100
+        } elseif ($tag -eq 'misp:confidence-level="usually-confident"') {
+            $Confidence = 75
+        } elseif ($tag -eq 'misp:confidence-level="confidence-cannot-be-evaluated"') {
+            $Confidence = 50
+        } elseif ($tag -eq 'misp:confidence-level="fairly-confident"') {
+            $Confidence = 50
+        } elseif ($tag -eq 'misp:confidence-level="rarely-confident"') {
+            $Confidence = 25
+        } elseif($tag -eq 'misp:confidence-level="unconfident"') {
+            $Confidence = 0
+        } else {
+            # Default confidence level
+            if(!$Confidence) {
+                $Confidence = 50
+            }
+        }
+    }
+    # Set severity level from the event tags
+    foreach($tag in $labels) {
+        if($tag -like '*misp:threat-level="high-risk"*') {
+            $Severity = 100
+        } elseif ($tag -like '*misp:threat-level="medium-risk"*') {
+            $Severity = 50
+        } elseif ($tag -like '*misp:threat-level="low-risk"*') {
+            $Severity = 25
+        } elseif($tag -like '*misp:threat-level="no-risk"*') {
+            $Severity = 0
+        }
+        elseif (-not $Severity) {
+            # Default severity level
+            $Severity = $null
+        }
+    }
+    # Set indicatorstypes from the severity and confidence tags
+    $indicator_types = @()
+    if($Severity -eq 100) {
+        $indicator_types += "threatstream-severity-high"
+    } elseif ($Severity -eq 50) {
+        $indicator_types += "threatstream-severity-medium"
+    } elseif ($Severity -eq 25) {
+        $indicator_types += "threatstream-severity-low"
+    } elseif ($Severity -eq 0) {
+        $indicator_types += "threatstream-severity-none"
+    }
+    if($Confidence -eq 100) {
+        $indicator_types += "threatstream-confidence-100"
+    } elseif ($Confidence -eq 75) {
+        $indicator_types += "threatstream-confidence-75"
+    } elseif ($Confidence -eq 50) {
+        $indicator_types += "threatstream-confidence-50"
+    } elseif ($Confidence -eq 25) {
+        $indicator_types += "threatstream-confidence-25"
+    } elseif ($Confidence -eq 0) {
+        $indicator_types += "threatstream-confidence-0"
+    }
     foreach ($attribute in $MISPAttributes) {
+        # Set the correct expiration date based on the attribute type
+        if($attribute.type -eq "ip-src" -or $attribute.type -eq "ip-dst") {
+            $daysToExpire = $DaysToExpireIPV4
+        }
+        elseif($attribute.type -eq "ipv6-src" -or $attribute.type -eq "ipv6-dst") {
+            $daysToExpire = $DaysToExpireIPV6
+        }
+        elseif($attribute.type -eq "domain") {
+            $daysToExpire = $DaysToExpireDomain
+        }
+        elseif($attribute.type -eq "url") {
+            $daysToExpire = $DaysToExpireURL
+        }
+        else {
+            $daysToExpire = $DaysToExpire
+        }
+        # Set the created timestamp 
+        $created_timestamp = [System.DateTimeOffset]::FromUnixTimeSeconds($attribute.timestamp).DateTime
+        
         $indicator = @{
             type = "indicator"
             spec_version = "2.1"
             id = "indicator--$($attribute.uuid)"
             name = $MISPEvent.info
-            created = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+            description = $attribute.comment
+            created = (Get-Date($created_timestamp)).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
             modified = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
             pattern = "[ipv4-addr:value = '$($attribute.value)']"
             pattern_type = "stix"
             valid_from = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+            valid_until = (Get-Date).AddDays($daysToExpire).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+            labels = $labels
+            confidence = $Confidence
+            indicator_types = $indicator_types
         }
         $indicators += $indicator
     }
 
     $output = @{
-        sourcesystem = "test_2"
+        sourcesystem = $SourceSystem
         indicators = $indicators
     }
 
