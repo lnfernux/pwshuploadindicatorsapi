@@ -33,7 +33,7 @@
     Description = 'This module helps convert MISP events and attributes to the Upload Indicators API format, and then uploads the indicators to the API.'
     
     # Minimum version of the PowerShell engine required by this module
-    # PowerShellVersion = ''
+    PowerShellVersion = '7.0.0'
     
     # Name of the PowerShell host required by this module
     # PowerShellHostName = ''
