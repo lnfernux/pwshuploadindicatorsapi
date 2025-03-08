@@ -71,7 +71,7 @@ This function is used to push indicators to Microsoft Sentinel. It requires the 
 
 ```powershell
 $indicators = Get-Content -Path .\Example\indicators.json 
-Push-IndicatorsToSentinel -Headers $headers -WorkspaceId $workspaceId -Indicators $indicators
+Push-IndicatorsToSentinel -token $headers -WorkspaceId $workspaceId -Indicators $indicators
 ```
 
 ### ConvertTo-UploadIndicatorsAPIFormat
