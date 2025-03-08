@@ -57,14 +57,24 @@ function ConvertTo-UploadIndicatorsAPIFormat {
         $DaysToExpireDomain = 180,
         $DaysToExpireURL = 365,
         $Confidence,
-        $SourceSystem = "pwshuploadindicatorsapi"
+        $SourceSystem = "pwshuploadindicatorsapi",
+        [switch]$UploadIndicatorsAPI
     )
     $indicators = @()
     # Set labels from the event - labels should be a list of strings
     $labels = @()
-    foreach($tag in $MISPEvent.EventTag) {
-        $labels += $tag.Tag.Name.TrimStart()
+    if($MISPEvent.EventTag) {
+        foreach($tag in $MISPEvent.EventTag) {
+            $labels += $tag.Tag.Name.TrimStart()
+        }
+    } elseif($MISPEvent.Tag) {
+        foreach($tag in $MISPEvent.Tag) {
+            $labels += $tag.Name.TrimStart()
+        }
+    } else {
+        $labels = $null
     }
+    
     # Check event for confidence tag
     foreach($tag in $labels) {
         if($tag -eq 'misp:confidence-level="completely-confident"') {
@@ -162,10 +172,16 @@ function ConvertTo-UploadIndicatorsAPIFormat {
         }
         $indicators += $indicator
     }
-
-    $output = @{
-        sourcesystem = $SourceSystem
-        indicators = $indicators
+    if($UploadIndicatorsAPI) { 
+        $output = @{
+            sourcesystem = $SourceSystem
+            indicators = $indicators
+        }
+    } else {
+        $output = @{
+            sourcesystem = $SourceSystem
+            stixobjects = $indicators
+        }
     }
 
     return $output | ConvertTo-Json -Depth 10

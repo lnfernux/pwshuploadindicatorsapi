@@ -67,11 +67,11 @@ $headers = New-UploadIndicatorsAPIHeader -Token $token
 
 ### Push-IndicatorsToSentinel
 
-This function is used to push indicators to Microsoft Sentinel. It requires the `$headers` object from the `New-UploadIndicatorsAPIHeader` function. It takes a json-formatted string of indicators as input, see the /Example folder for such a sample file.
+This function is used to push indicators to Microsoft Sentinel. It requires the `$token` object from the `Connect-UploadIndicatorsAPI` function. It takes a json-formatted string of indicators as input, see the /Example folder for such a sample file.
 
 ```powershell
 $indicators = Get-Content -Path .\Example\indicators.json 
-Push-IndicatorsToSentinel -Headers $headers -WorkspaceId $workspaceId -Indicators $indicators
+Push-IndicatorsToSentinel -token $token -WorkspaceId $workspaceId -Indicators $indicators
 ```
 
 ### ConvertTo-UploadIndicatorsAPIFormat
@@ -133,6 +133,30 @@ Event               : @{org_id=1; distribution=3; publish_timestamp=0; id=1780; 
 # Third, convert the attributes to a format that can be used with the `pwshuploadindicatorsapi` module
 $indicators = ConvertTo-UploadIndicatorsAPIFormat -MISPAttributes $attributes.Attribute -MISPEvent $MISPEvent
 ```
+
+You can also use the `Invoke-MISPEventSearch`-function, which will return both event and attribute information.
+
+```powershell
+$MISPData = Invoke-MISPEventSearch -MISPUrl $MISPUrl -MISPAuthHeader $MISPAUthHeader -Filter $Filter -SelfSigned
+$indicators = @()
+foreach($event in $MISPData.response) {
+    $indicators += ConvertTo-UploadIndicatorsAPIFormat -MISPAttributes $event.Event.Attribute -MISPEvent $event.Event
+}
+$indicatorsObject = $indicators | ConvertFrom-Json -Depth 10
+$token = Connect-UploadIndicatorsAPI -ClientID $ApplicationId -ClientSecret $ApplicationSecret -TenantID $TenantId
+$uploadindicatorheaders = New-UploadIndicatorsAPIHeader -Token $token
+foreach($indicator in $indicatorsObject) {
+    Push-IndicatorsToSentinel -token $token -WorkspaceId $WorkspaceId -Indicators $indicator -SourceSystem "mysourcesystem"
+}
+```
+
+## Updates
+
+### March 2025
+
+Updated to v1.0.2:
+- Add support for the `SourceSystem` parameter in the `Push-IndicatorsToSentinel` function. 
+- Added the `-UploadIndicatorsAPI` parameter to the `ConvertTo-UploadIndicatorsAPIFormat` and `Push-IndicatorsToSentinel` functions to support the new Stix Object API. The functions now default to the new API, but can be changed to the old API by calling the `-UploadIndicatorsAPI`.
 
 ## Known issues
 

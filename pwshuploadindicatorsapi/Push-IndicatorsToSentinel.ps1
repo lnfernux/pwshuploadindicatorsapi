@@ -33,21 +33,40 @@ function Push-IndicatorsToSentinel {
         [Parameter(Mandatory = $true)]
         $token,
         [Parameter(Mandatory = $true)]
-        [array]$Indicators
+        $Indicators,
+        [switch]$UploadIndicatorsAPI,
+        [string]$SourceSystem = "pwshuploadindicatorsapi"
     )
     $header = New-UploadIndicatorsAPIHeader -token $token
-    $uri = "https://sentinelus.azure-api.net/workspaces/$WorkspaceId/threatintelligenceindicators:upload?api-version=2022-07-01"
-    $indicator = $indicators | ConvertFrom-Json
-
-    # Validate required properties
-    $requiredProperties = @("id", "type", "labels", "pattern", "valid_from", "created", "modified")
-    foreach($property in $requiredProperties) {
-        if(-not $indicator.PSObject.Properties.Value.$property) {
-            throw "Property $property is required"
-        }
+    # Upload Indicators API
+    if($UploadIndicatorsAPI) {
+        $uri = "https://sentinelus.azure-api.net/workspaces/$WorkspaceId/threatintelligenceindicators:upload?api-version=2022-07-01"
+    } else {
+        $uri = "https://api.ti.sentinel.azure.com/workspaces/$WorkspaceId/threat-intelligence-stix-objects:upload?api-version=2024-02-01-preview"
     }
-    $body = $indicator | ConvertTo-Json -depth 50
-    $response = Invoke-RestMethod -Uri $uri -Method Post -Headers $header -Body $body
-    return $response
+    # Split indicators into batches of 100
+    $indicatorBatches = [System.Collections.ArrayList]::new()
+    for ($i = 0; $i -lt $Indicators.stixobjects.Count; $i += 100) {
+        $indicatorBatches.Add($Indicators.stixobjects[$i..[math]::Min($i + 99, $Indicators.stixobjects.Count - 1)])
+    }
+
+    foreach ($batch in $indicatorBatches) {
+        # Ensure each indicator in the batch is a valid JSON object
+        $validBatch = $batch | ForEach-Object {
+            if ($_ -is [PSCustomObject]) {
+                $_
+            } else {
+                ConvertFrom-Json $_
+            }
+        }
+
+        $body = @{
+            sourcesystem = "pwshuploadindicatorsapi"
+            stixobjects = $validBatch
+        } | ConvertTo-Json -Depth 10
+
+        $response = Invoke-RestMethod -Uri $uri -Method Post -Headers $header -Body $body
+        Write-Host "Batch of $($validBatch.Count) indicators pushed successfully."
+    }
 }
 
