@@ -67,15 +67,11 @@ $headers = New-UploadIndicatorsAPIHeader -Token $token
 
 ### Push-IndicatorsToSentinel
 
-This function is used to push indicators to Microsoft Sentinel. It requires the `$token` object from the `Connect-UploadIndicatorsAPI` function. It takes a json-formatted string of indicators as input, see the /Example folder for such a sample file.
+This function is used to push indicators to Microsoft Sentinel. It requires the `$token` object from the `Connect-UploadIndicatorsAPI` function. It takes a json-formatted string of indicators as input (it uses `UploadIndicatorsAPIHeader` to create the correct header), see the /Example folder for such a sample file.
 
 ```powershell
 $indicators = Get-Content -Path .\Example\indicators.json 
-<<<<<<< HEAD
 Push-IndicatorsToSentinel -token $token -WorkspaceId $workspaceId -Indicators $indicators
-=======
-Push-IndicatorsToSentinel -token $headers -WorkspaceId $workspaceId -Indicators $indicators
->>>>>>> 675d1d7c697ffb383e602766b00c452ebaba8c18
 ```
 
 ### ConvertTo-UploadIndicatorsAPIFormat
